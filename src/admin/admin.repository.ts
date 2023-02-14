@@ -1,7 +1,14 @@
-import { Class, classDocument, Course, CourseDocument, User, UserDocument } from '@app/common';
+import {
+  Class,
+  classDocument,
+  Course,
+  CourseDocument,
+  User,
+  UserDocument,
+} from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { createCourseDto } from 'src/admin/dto/create-course.dto';
 import { AddClassDto } from './dto/add-class.dto';
 
@@ -154,25 +161,30 @@ export class AdminRepo {
   }
   async getApprovedClients(): Promise<User[]> {
     try {
-      const getClientsDetails = await this.userModel.aggregate([{
-        $match:{}
-      },{
-        $lookup:{
-          localField: "course",
-          from:"Courses",
-          foreignField: "_id",
-          as: "clientDetails"
-        }}
-        ,{
-          $unwind: "$clientDetails"
+      const getClientsDetails = await this.userModel.aggregate([
+        {
+          $match: {},
         },
-        {$project:{
-          email: 1,
-          course: "$clientDetails.courseName",
-        }}
-      ])
-        console.log(getClientsDetails)
-      return getClientsDetails
+        {
+          $lookup: {
+            localField: 'course',
+            from: 'Courses',
+            foreignField: '_id',
+            as: 'clientDetails',
+          },
+        },
+        {
+          $unwind: '$clientDetails',
+        },
+        {
+          $project: {
+            email: 1,
+            course: '$clientDetails.courseName',
+          },
+        },
+      ]);
+      console.log(getClientsDetails);
+      return getClientsDetails;
     } catch (error) {
       console.log(error);
     }
@@ -192,36 +204,79 @@ export class AdminRepo {
       return { message: 'success' };
     } catch (error) {}
   }
-  async addClass( body: AddClassDto): Promise<object> {
+  async addClass(body: AddClassDto): Promise<object> {
     try {
-      console.log(body)
-      const added = new this.classModel(body)
-      added.save()
+      // body.course = new mongoose.Types.ObjectId(body.course)
+      console.log(body);
+      const added = new this.classModel(body);
+      added.save();
       return { message: 'success' };
     } catch (error) {
       console.log(error);
     }
   }
-  async getClass(): Promise<Class[]>{
+  async getClass(): Promise<Class[]> {
     try {
-      const getAddedClass = await this.classModel.aggregate([{
+      const getAddedClass = await this.classModel.aggregate([
+        {
+          $lookup: {
+            localField: 'course',
+            from: 'Courses',
+            foreignField: '_id',
+            as: 'CourseDetails',
+          },
+        },
+        { $unwind: '$CourseDetails' },
+        {
+          $project: {
+            className: 1,
+            course: '$CourseDetails.courseName',
+            date: 1,
+          },
+        },
+      ]);
+      return getAddedClass;
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async getBookedClass(): Promise<Class[]>{
+    try {
+      const getClass = await this.classModel.aggregate([{
+        $unwind: "$booked"
+      },{
         $lookup:{
           localField: "course",
           from:"Courses",
           foreignField: "_id",
-          as: "CourseDetails"
+          as: "detailsOfCourse"
+        }
+      },{
+        $unwind: "$detailsOfCourse"
+      },{
+        $lookup:{
+          localField: "booked.id",
+          from: "Clients",
+          foreignField: "_id",
+          as: "detailsOfClients"
         }
       },
-      {$unwind: "$CourseDetails"},
-      {$project:{
-        className: 1,
-        course: "$CourseDetails.courseName",
-        date: 1,
-      }}
+      {
+        $unwind: "$detailsOfClients"
+      },{
+        $project:{
+          className:  1,
+          date: 1,
+          courseName: "$detailsOfCourse.courseName",
+          email: "$detailsOfClients.email"
+        }
+      }
     ])
-      return getAddedClass
+      console.log(getClass)
+      return 
     } catch (error) {
-      
+      console.log(error)
     }
   }
 }

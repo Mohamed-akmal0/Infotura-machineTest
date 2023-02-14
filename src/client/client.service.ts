@@ -20,7 +20,7 @@ export class ClientService {
   constructor(
     private readonly clientRepo: ClientRepo,
     private jwtService: JwtService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {}
 
   async register(body: createUserDto) {
@@ -31,7 +31,7 @@ export class ClientService {
     return this.clientRepo.Register(body);
   }
 
-  async Login(body: loginUserDto , response: Response) {
+  async Login(body: loginUserDto, response: Response) {
     const { email, password } = body;
     const user = await this.clientRepo.findEmail(email);
     if (user === null) throw new NotFoundException('wrong_email');
@@ -43,23 +43,23 @@ export class ClientService {
     if (isReject === true) throw new BadRequestException('rejected');
     // const token = await this.signToken({ id: user._id, email });
     // response.cookie('user_jwt' , token,{httpOnly: false})
-    return response.json(user._id)
+    return response.json(user._id);
   }
 
   async signToken(args: { id: string; email: string }) {
     const payload = args;
-    const clientSecret = this.configService.get('CLIENT_SECRET')
-    console.log(clientSecret)
+    const clientSecret = this.configService.get('CLIENT_SECRET');
+    console.log(clientSecret);
     return await this.jwtService.signAsync(payload, { secret: clientSecret });
   }
 
   async getDetails(id: getClientDetailsDto) {
-    const clientDetails = await this.clientRepo.getClientDetails(id)
-    return clientDetails
+    const clientDetails = await this.clientRepo.getClientDetails(id);
+    return clientDetails;
   }
 
-  async book(id: BookClassDto, body: BookClassDto){
-    const bookedClass = await this.clientRepo.bookClass(id,body)
-    return bookedClass
+  async book(id: BookClassDto, body: BookClassDto) {
+    const bookedClass = await this.clientRepo.bookClass(id, body);
+    return bookedClass;
   }
 }

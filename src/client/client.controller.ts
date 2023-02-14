@@ -1,4 +1,13 @@
-import { Controller, Post, Body , Res, HttpCode, Get, Param,Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  HttpCode,
+  Get,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { ClientService } from './client.service';
 import { BookClassDto } from './dto/book-class.dto';
@@ -16,19 +25,18 @@ export class ClientController {
   }
   @HttpCode(200)
   @Post('login')
-  login(@Body() body: loginUserDto, @Res() response: Response ) {
-    return this.clientService.Login(body,response);
+  login(@Body() body: loginUserDto, @Res() response: Response) {
+    return this.clientService.Login(body, response);
   }
 
   @Get('getClientDetails/:id')
-  getClientDetails(@Param() id: getClientDetailsDto){
-    return this.clientService.getDetails(id)
+  getClientDetails(@Param() id: getClientDetailsDto) {
+    return this.clientService.getDetails(id);
   }
 
   @Patch('bookClass/:id')
-  bookClass(@Param() id: BookClassDto , @Body() body: BookClassDto){
-    console.log(id,body)
-    return this.clientService.book(id,body)
+  bookClass(@Param() id: BookClassDto, @Body() body: BookClassDto) {
+    console.log(id, body);
+    return this.clientService.book(id, body);
   }
-
 }

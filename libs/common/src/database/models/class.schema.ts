@@ -1,27 +1,25 @@
-import {Schema , Prop,SchemaFactory} from '@nestjs/mongoose'
-import { Document, ObjectId, Types, Schema as MongooseSchema } from 'mongoose'
-import { AbstractDocument } from '../abstract.schema'
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { Document, ObjectId, Schema as MongooseSchema } from 'mongoose';
+import { AbstractDocument } from '../abstract.schema';
 
-export type classDocument = Class & Document
+export type classDocument = Class & Document;
 
-@Schema({versionKey: false, collection: 'classes'})
+@Schema({ versionKey: false, collection: 'classes' })
 export class Class extends AbstractDocument {
-    @Prop({type: String})
-    className: string
+  @Prop({ type: String })
+  className: string;
 
-    @Prop()
-    course: ObjectId
+  @Prop()
+  course: ObjectId;
 
-    @Prop({type: Date})
-    date: Date
+  @Prop({ type: Date })
+  date: Date;
 
-    @Prop()
-    user: ObjectId
+  @Prop()
+  user: ObjectId;
 
-    @Prop({type:[
-        {userId: MongooseSchema.Types.ObjectId, }
-    ]})
-    booked: {userId: ObjectId}[]
+  @Prop({ type: [{id: {type: MongooseSchema.Types.ObjectId}}] })
+  booked:{ id: mongoose.Types.ObjectId}[];
 }
 
-export const classSchema = SchemaFactory.createForClass(Class)
+export const classSchema = SchemaFactory.createForClass(Class);

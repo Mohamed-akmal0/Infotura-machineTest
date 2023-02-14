@@ -76,11 +76,17 @@ export class AdminController {
     return this.adminService.restore(id);
   }
   @Patch('addClass')
-  addClass( @Body() body: AddClassDto) {
-    return this.adminService.AddClass( body);
+  addClass(@Body() body: AddClassDto) {
+    console.log(body)
+    return this.adminService.AddClass(body);
   }
   @Get('getClass')
-  getClass(){
-    return this.adminService.getAddedClass()
+  getClass() {
+    return this.adminService.getAddedClass();
+  }
+
+  @Get('getBookedClass')
+  getBookedClass(){
+    return this.adminService.bookedClass()
   }
 }

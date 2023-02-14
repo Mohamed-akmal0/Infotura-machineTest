@@ -1,4 +1,4 @@
-export interface BookClassDto{
-    id:string;
-    Id: string;
+export interface BookClassDto {
+  id: string;
+  Id: string;
 }

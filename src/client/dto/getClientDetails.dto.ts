@@ -1,3 +1,3 @@
-export interface getClientDetailsDto{
-    id:string
+export interface getClientDetailsDto {
+  id: string;
 }

@@ -8,8 +8,9 @@ import { getClientDetailsDto } from './dto/getClientDetails.dto';
 
 @Injectable()
 export class ClientRepo {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>,
-  @InjectModel(Class.name) private readonly classModel: Model<classDocument>
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Class.name) private readonly classModel: Model<classDocument>,
   ) {}
 
   async Register(body: createUserDto): Promise<object> {
@@ -32,58 +33,62 @@ export class ClientRepo {
     }
   }
 
-  async getClientDetails(Id: getClientDetailsDto): Promise<User[]>{
-    const {id} = Id
-      try {
-       const clientDetails = await this.userModel.aggregate([{
-          $match:{
-            _id: new Types.ObjectId(id)
-          }
-        },{
-          $lookup:{
-            localField: "course",
-            from: "Courses",
-            foreignField: "_id",
-            as: "courseDetails"
-          }
-        },{
-          $lookup:{
-            localField: "course",
-            from:"classes",
-            foreignField: "course",
-            as: "classDetails"
-          }
-        },{
-          $unwind: "$courseDetails"
+  async getClientDetails(Id: getClientDetailsDto): Promise<User[]> {
+    const { id } = Id;
+    try {
+      const clientDetails = await this.userModel.aggregate([
+        {
+          $match: {
+            _id: new Types.ObjectId(id),
+          },
         },
         {
-          $project:{
-            email:1,
-            course: "$courseDetails.courseName",
-            class: "$classDetails"
-          }
-        }
-      ]) 
-        return clientDetails[0]
-      } catch (error) {
-        console.log(error)
-      }
+          $lookup: {
+            localField: 'course',
+            from: 'Courses',
+            foreignField: '_id',
+            as: 'courseDetails',
+          },
+        },
+        {
+          $lookup: {
+            localField: 'course',
+            from: 'classes',
+            foreignField: 'course',
+            as: 'classDetails',
+          },
+        },
+        {
+          $unwind: '$courseDetails',
+        },
+        {
+          $project: {
+            email: 1,
+            course: '$courseDetails.courseName',
+            class: '$classDetails',
+          },
+        },
+      ]);
+      return clientDetails[0];
+    } catch (error) {
+      console.log(error);
+    }
   }
-  async bookClass(Id: BookClassDto,body: BookClassDto): Promise<Class[]>{
-    const {id} = Id
-    try{
-      const bookeClass = await this.classModel.findByIdAndUpdate({
-        _id: new Types.ObjectId(body.Id)
-      },{
+  async bookClass(Id: BookClassDto, body: BookClassDto): Promise<Class> {
+    const { id } = Id;
+    try {
+      const bookeClass = await this.classModel.findOneAndUpdate({
+        _id: body.Id
+      }
+      ,{
         $addToSet:{
-          booked: {userId: id}
+          booked: Id
         }
       }
       )
-      console.log(bookeClass)
-      return
-    }catch(error){
-      console.log(error)
+      return bookeClass
+    } catch (error) {
+      console.log(error);
     }
   }
 }

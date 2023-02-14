@@ -8,7 +8,10 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly adminRepo: AdminRepo,private jwtService: JwtService) {}
+  constructor(
+    private readonly adminRepo: AdminRepo,
+    private jwtService: JwtService,
+  ) {}
 
   async AdminLogin(body: AdminLoginDto) {
     const { email, password } = body;
@@ -18,8 +21,8 @@ export class AdminService {
     const hashedPassword = await bcrypt.compare(password, FindAdmin.password);
     if (hashedPassword === false)
       throw new UnauthorizedException('wrong_password');
-      const jwt = await this.jwtService.signAsync({id: FindAdmin._id})
-      console.log(jwt)
+    const jwt = await this.jwtService.signAsync({ id: FindAdmin._id });
+    console.log(jwt);
     return { message: 'success' };
   }
 
@@ -65,10 +68,14 @@ export class AdminService {
   async restore(id: string) {
     return await this.adminRepo.restoreCourse(id);
   }
-  async AddClass( body: AddClassDto) {
-    return await this.adminRepo.addClass( body);
+  async AddClass(body: AddClassDto) {
+    return await this.adminRepo.addClass(body);
   }
-  async getAddedClass(){
-    return await this.adminRepo.getClass()
+  async getAddedClass() {
+    return await this.adminRepo.getClass();
+  }
+  async bookedClass (){
+    const classesThatBooked = await this.adminRepo.getBookedClass()
+    return 
   }
 }

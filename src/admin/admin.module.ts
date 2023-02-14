@@ -1,4 +1,11 @@
-import { Class, classSchema, Course, CourseSchema, User, UserSchema } from '@app/common';
+import {
+  Class,
+  classSchema,
+  Course,
+  CourseSchema,
+  User,
+  UserSchema,
+} from '@app/common';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -12,14 +19,14 @@ import { AdminService } from './admin.service';
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('ADMIN_SECRET'),
-        signOptions: {expiresIn : '1d'}
+        signOptions: { expiresIn: '1d' },
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Course.name, schema: CourseSchema },
-      {name: Class.name, schema: classSchema} ,
+      { name: Class.name, schema: classSchema },
     ]),
   ],
   controllers: [AdminController],
