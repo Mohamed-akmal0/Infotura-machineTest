@@ -87,6 +87,6 @@ export class AdminController {
 
   @Get('getBookedClass')
   getBookedClass(){
-    return this.adminService.bookedClass()
+    return this.adminService.bookedClass() 
   }
 }

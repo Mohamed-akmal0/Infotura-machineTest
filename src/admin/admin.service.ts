@@ -76,6 +76,6 @@ export class AdminService {
   }
   async bookedClass (){
     const classesThatBooked = await this.adminRepo.getBookedClass()
-    return 
+    return classesThatBooked
   }
 }

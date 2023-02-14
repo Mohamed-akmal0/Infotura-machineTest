@@ -273,8 +273,7 @@ export class AdminRepo {
         }
       }
     ])
-      console.log(getClass)
-      return 
+      return getClass
     } catch (error) {
       console.log(error)
     }
