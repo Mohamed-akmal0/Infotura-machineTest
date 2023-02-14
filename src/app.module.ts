@@ -15,7 +15,6 @@ import { DatabaseModule } from '@app/common';
       }),
       envFilePath: '.env',
     }),
-
     AdminModule,
     ClientModule,
     DatabaseModule,
