@@ -25,7 +25,7 @@ export class ClientController {
   }
   @HttpCode(200)
   @Post('login')
-  login(@Body() body: loginUserDto, @Res() response: Response) {
+  login(@Body() body: loginUserDto, @Res({passthrough: true}) response: Response) {
     return this.clientService.Login(body, response);
   }
 

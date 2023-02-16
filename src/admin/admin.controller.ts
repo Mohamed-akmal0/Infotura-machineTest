@@ -6,7 +6,9 @@ import {
   Patch,
   Param,
   HttpCode,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { createCourseDto } from 'src/admin/dto/create-course.dto';
 import { AdminService } from './admin.service';
 import { AddClassDto } from './dto/add-class.dto';
@@ -18,8 +20,8 @@ export class AdminController {
 
   @HttpCode(200)
   @Post('login')
-  Login(@Body() body: AdminLoginDto) {
-    return this.adminService.AdminLogin(body);
+  Login(@Body() body: AdminLoginDto,@Res({passthrough: true}) response: Response) {
+    return this.adminService.AdminLogin(body , response);
   }
 
   @Get('clients')

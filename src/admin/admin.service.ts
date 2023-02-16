@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { createCourseDto } from 'src/admin/dto/create-course.dto';
 import { AddClassDto } from './dto/add-class.dto';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Injectable()
 export class AdminService {
@@ -13,7 +14,7 @@ export class AdminService {
     private jwtService: JwtService,
   ) {}
 
-  async AdminLogin(body: AdminLoginDto) {
+  async AdminLogin(body: AdminLoginDto , response: Response) {
     const { email, password } = body;
     const FindAdmin = await this.adminRepo.findAdmin();
     if (email !== FindAdmin.email)
@@ -22,7 +23,7 @@ export class AdminService {
     if (hashedPassword === false)
       throw new UnauthorizedException('wrong_password');
     const jwt = await this.jwtService.signAsync({ id: FindAdmin._id });
-    console.log(jwt);
+    response.cookie('admin_jwt' , jwt, {httpOnly: false})
     return { message: 'success' };
   }
 

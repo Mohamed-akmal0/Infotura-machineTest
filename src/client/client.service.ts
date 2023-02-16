@@ -41,9 +41,9 @@ export class ClientService {
       throw new UnauthorizedException('wrong_password');
     if (isApproved === false) throw new ForbiddenException('not_approved');
     if (isReject === true) throw new BadRequestException('rejected');
-    // const token = await this.signToken({ id: user._id, email });
-    // response.cookie('user_jwt' , token,{httpOnly: false})
-    return response.json(user._id);
+    const token = await this.signToken({ id: user._id, email });
+    response.cookie('user_jwt' , token,{httpOnly: false})
+    return user._id;
   }
 
   async signToken(args: { id: string; email: string }) {
